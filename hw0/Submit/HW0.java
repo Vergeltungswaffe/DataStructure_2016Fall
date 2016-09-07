@@ -39,7 +39,7 @@ public class HW0
         int[] temp = new int[26];
         for (int i = 0; i < s.length(); i++)
         {
-            temp[(int) s.charAt(i) - 'a']++;
+            temp[s.charAt(i) - 'a']++;
         }
         for (int i = 0; i < 26; i++)
         {
