@@ -1,3 +1,4 @@
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 
 public class HuffmanEncoderTest
 {
-    @Test//(timeout=1000)
+    @Test(timeout=1000)
     public void testBasic()
     {
         HashMap<Character, Integer> m = new HashMap<Character,Integer>();
@@ -93,5 +94,7 @@ public class HuffmanEncoderTest
 
         HuffmanEncoder i = new HuffmanEncoder("/home/bayta/Desktop/phw4test/read_from_file_test.txt");
         i.encodeFile("/home/bayta/Desktop/phw4test/read_from_file_test.txt", "/home/bayta/Desktop/phw4test/read_from_file_test_Myresult.txt");
+        i.decodeFile("/home/bayta/Desktop/phw4test/read_from_file_test_Myresult.txt", "/home/bayta/Desktop/phw4test/resultofresult.txt");
+
     }
 }

@@ -164,8 +164,10 @@ public class Graph
                     int wgt = e.getWeight();
                     if(d.get(u)+wgt<d.get(v))
                     {
+                        pq.remove(v);
                         d.put(v,d.get(u)+wgt);
                         v.setValue(d.get(u)+wgt);
+                        pq.add(v);
                     }
                 }
             }
@@ -184,7 +186,7 @@ public class Graph
         return dijkstra(source).get(target);
     }
 
-    public ArrayList<Edge> minSpanningTree()
+    public ArrayList<Edge> minSpanningTree() // Prim's Algorithm
     {
         /*
          * Return a list of all of the edges in the minimum spanning tree of
@@ -212,25 +214,34 @@ public class Graph
 
         while(!pq.isEmpty())
         {
-            Node u = pq.remove();
+            Node u = pq.poll();
             int weight = u.getValue();
             cloud.put(u,weight);
-
+            boolean findMinEdgeFlag = false;
             ArrayList<Edge> edges = adjList.get(u);
             for(Edge e : edges)
             {
-                if(e.getWeight()==weight)
-                    minSpanTree.add(e);
                 Node v = e.getU()==u?e.getV():e.getU();
+                if((cloud.get(v) != null) && (weight == e.getWeight()))
+                {
+                    if(!findMinEdgeFlag)
+                    {
+                        minSpanTree.add(e);
+                        findMinEdgeFlag = true;
+                    }
+                }
                 if(cloud.get(v)==null)
                 {
                     int wgt = e.getWeight();
                     if(wgt<v.getValue())
                     {
+                        pq.remove(v);
                         v.setValue(wgt);
+                        pq.add(v);
                     }
                 }
             }
+
         }
         return minSpanTree;
     }

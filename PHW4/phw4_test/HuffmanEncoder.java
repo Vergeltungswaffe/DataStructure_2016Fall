@@ -57,7 +57,10 @@ public class HuffmanEncoder
             newNode.setRight(temp2);
             pq.add(newNode);
         }
-        codeTreeRoot = pq.remove();
+        if(pq.size()!=0)
+        {
+            codeTreeRoot = pq.remove();
+        }
     }
 
     public HuffmanEncoder(String filePath)
@@ -77,17 +80,14 @@ public class HuffmanEncoder
          *     and used to construct our encoding tree. If a character does not
          *     appear in the file, you can assume it will not appear in any test
          */
-
+        Scanner scan = null;
         HashMap<Character, Integer> frequencyTable = new HashMap<>();
-        HashMap<Character, Integer> alphabetCode = new HashMap<>();
-        int index=0;
-        for(char c : alphabet)
+        HashMap<Character, Integer> alphabetIndex = new HashMap<>();
+        for(int i=0;i<alphabet.length;i++)
         {
-            alphabetCode.put(c, index++);
+            alphabetIndex.put(alphabet[i], i);
         }
         int[] freq = new int[alphabet.length];
-
-        Scanner scan = null;
 
         try
         {
@@ -111,12 +111,11 @@ public class HuffmanEncoder
                      * whatever way you want, but we don't recommend it.
                      *
                      */
-                    freq[alphabetCode.get(c)]++;
-
+                    freq[alphabetIndex.get(c)]++;
                 }
-                freq[alphabetCode.get('\n')]++;
+                freq[alphabetIndex.get('\n')]++;
             }
-            freq[alphabetCode.get('\n')]--;
+            freq[alphabetIndex.get('\n')]--;
         }
 
         catch(Exception e)
@@ -134,14 +133,17 @@ public class HuffmanEncoder
 
         for(char c : alphabet)
         {
-            frequencyTable.put(c,freq[alphabetCode.get(c)]);
+            int alphabetIdx = alphabetIndex.get(c);
+            if(freq[alphabetIdx]==0)
+            {
+                continue;
+            }
+            frequencyTable.put(c,freq[alphabetIdx]);
         }
         PriorityQueue<HuffmanNode> pq = new PriorityQueue<>();
         for(int i=0;i<alphabet.length;i++)
         {
             if(frequencyTable.get(alphabet[i])==null)
-                continue;
-            if(frequencyTable.get(alphabet[i])==0)
                 continue;
             pq.add(new HuffmanNode(frequencyTable.get(alphabet[i]),alphabet[i]));
         }
@@ -173,12 +175,14 @@ public class HuffmanEncoder
         /*
          * Return the string containing the encoding of the provided string
          */
+        if(s.length()==0)
+            return "";
         getMapping();
         char[] input = s.toCharArray();
         String output = "";
         for(char c : input)
         {
-            output = output.concat(this.codeMap.get(c));
+            output = output.concat(codeMap.get(c));
         }
         return output;
     }
@@ -188,6 +192,8 @@ public class HuffmanEncoder
         /*
          * Given an encoded string, return the original, decoded string
          */
+        if(s.length()==0)
+            return "";
         char[] input = s.toCharArray();
         String output = "";
         HuffmanNode curNode = codeTreeRoot;
@@ -206,7 +212,6 @@ public class HuffmanEncoder
                 output = output.concat(curNode.getCharacter().toString());
                 curNode = codeTreeRoot;
             }
-
         }
         return output;
     }
@@ -301,15 +306,14 @@ public class HuffmanEncoder
 
     private HuffmanNode mappingHelper(HuffmanNode hn, String s)
     {
-        HuffmanNode tempNode = hn;
         String tempString = s;
         if(hn.getLeft()==null&&hn.getRight()==null)
-            codeMap.put(tempNode.getCharacter(),tempString);
+            codeMap.put(hn.getCharacter(),tempString);
         if(hn.getLeft()!=null)
             mappingHelper(hn.getLeft(), tempString.concat("0"));
         if(hn.getRight()!=null)
             mappingHelper(hn.getRight(), tempString.concat("1"));
-        return tempNode;
+        return hn;
     }
 
 }
